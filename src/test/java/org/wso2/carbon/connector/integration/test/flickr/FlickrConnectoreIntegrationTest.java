@@ -50,7 +50,7 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
 
     protected String repoLocation = null;
 
-    protected String flickrConnectorFileName = CONNECTOR_NAME + "-connector-1.0.0.zip";
+    protected String flickrConnectorFileName = CONNECTOR_NAME + "-connector-1.0.1-SNAPSHOT.zip";
 
     protected Properties flickrConnectorProperties = null;
 
