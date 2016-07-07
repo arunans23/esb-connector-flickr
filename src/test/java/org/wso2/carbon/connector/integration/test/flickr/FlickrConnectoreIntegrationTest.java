@@ -50,7 +50,7 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
 
     protected String repoLocation = null;
 
-    protected String flickrConnectorFileName = CONNECTOR_NAME + "-connector-1.0.1-SNAPSHOT.zip";
+    protected String flickrConnectorFileName = CONNECTOR_NAME + "-connector-1.0.1.zip";
 
     protected Properties flickrConnectorProperties = null;
 
@@ -649,11 +649,13 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
             Assert.assertTrue(responseConnector.getString("stat").equals("fail") &&
