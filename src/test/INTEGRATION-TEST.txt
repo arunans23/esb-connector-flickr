@@ -7,27 +7,47 @@ Pre-requisites:
 
 Tested Platform:
 
- - Linux 3.11.0-19-generic (Ubuntu 13.10), Mac OSx 10.9
- - WSO2 ESB 4.9.0
+ - Linux 3.11.0-19-generic (Ubuntu 13.10), Mac OSx 10.9,  Mac OSx 10.10.3
+ - WSO2 ESB 4.9.0, ESB 5.0.0-BETA
  - Java 1.7
 
 STEPS:
 
-1. Add the WSO2 ESB 4.9.0 to the {ESB_Connector_Home}/repository/ folder.
-    If you want to use another location, please change it accordingly in the pom.xml as follows.
+1. Download ESB WSO2 ESB 5.0.0-BETA from official site. Extract the ESB and put "-XX:-UseSplitVerifier" under $JVM_MEM_OPTS into {ESB_HOME}/bin/wso2server.sh.
 
-          <carbon.zip>
-            ${basedir}/../test/wso2esb-${esb.version}.zip
-          </carbon.zip>
+2. Extract the certificate from browser by navigating to "https://www.flickr.com/" and place the certificate file in following locations.
 
-2. Update the flickr.properties file with your details if you have any or you can use the default account details as it is.
+    i)  "<FLICKR_CONNECTOR_HOME>/src/test/resources/keystores/products"
 
-    consumerKey=00a49886c96cd978d1c513cb2d33742b
-    consumerKeySecret=f20cca596738e959
-    accessToken=72157642842074863-5faf0186518885ab
-    accessTokenSecret=70cd37fb502cb6fd
+		Navigate to the above location from command prompt and execute 'keytool -importcert -file CERT_FILE_NAME -keystore wso2carbon.jks -alias "flickr"' in command line to import flickr certificate in to keystore. Give "wso2carbon" as password.
+		NOTE : CERT_FILE_NAME is the file name which was extracted from flickr with  the extension, change it accordingly. Remove the copied certificate.
 
-4. Navigate to "{ESB_Connector_Home}/" and run the following command.
+    ii) "<ESB_HOME>/repository/resources/security"
+
+		Navigate to the above location from command prompt and execute 'keytool -importcert -file CERT_FILE_NAME -keystore client-truststore.jks -alias "flickr"' in command line to import flickr certificate in to keystore. Give "wso2carbon" as password.
+		NOTE : CERT_FILE_NAME is the file name which was extracted from flickr with  the extension, change it accordingly. Remove the copied certificate.
+
+Compress and place the wso2esb-5.0.0-BETA.zip in to the {ESB_Connector_Home}/repository/ folder.
+
+3. Signup an account at https://www.flickr.com
+
+4. Click on 'Create your own memorable Flickr web address' and create a web address.
+
+5. Navigate to https://www.flickr.com/services/apps/create/, click on 'Get your API Key' and create an application. It will show the credentials.
+
+6. Navigate to https://www.flickr.com/services/api/explore/flickr.auth.oauth.getAccessToken and make the call to get access token.
+
+7. Update the flickr.properties file with your details if you have any or you can use the default account details as it is.
+
+    i)   apiUrl            - Use the URL of the Survey Flickr REST API (Default value is 'https://api.flickr.com/services/rest').
+    ii)  consumerKey       - Use the consumer key returned in step 5.
+    iii) consumerKeySecret - Use the consumer key secret returned in step 5.
+    iv)  accessToken       - Use the access token from the response of step 6.
+    v)   accessTokenSecret - Use the access token secret from the response of step 6.
+    vi)  photoId           - Use the ID of the profile photo.
+    vii) userId            - Use the ID of the user.
+
+8. Navigate to "{ESB_Connector_Home}/" and run the following command.
      $ mvn clean install
 
 Account details used in the tests are as follows.

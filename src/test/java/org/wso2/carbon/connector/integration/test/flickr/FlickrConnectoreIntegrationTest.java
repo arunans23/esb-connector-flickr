@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
@@ -6,7 +6,7 @@
  *  in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -94,12 +94,9 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
 
         adminServiceStub.updateStatus("{org.wso2.carbon.connector}" + CONNECTOR_NAME, CONNECTOR_NAME,
                 "org.wso2.carbon.connector", "enabled");
-
         flickrConnectorProperties = ConnectorIntegrationUtil.getConnectorConfigProperties(CONNECTOR_NAME);
-
         pathToProxiesDirectory = repoLocation + flickrConnectorProperties.getProperty("proxyDirectoryRelativePath");
         pathToRequestsDirectory = repoLocation + flickrConnectorProperties.getProperty("requestDirectoryRelativePath");
-
     }
 
     @Override
@@ -128,12 +125,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         final String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.test.echo&api_key=" +
@@ -141,22 +138,17 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     "&value=wso2-esb";
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for isLogged method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {isLogged} integration test with mandatory parameters.")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {isLogged} integration test with mandatory parameters.")
     public void testFlickrIsLoggedWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_isLogged.txt";
@@ -165,12 +157,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         final String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json" +
@@ -184,22 +176,17 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     "&oauth_version=1.0";
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(true,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for addComment method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {addComment} integration test with mandatory parameters")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {addComment} integration test with mandatory parameters")
     public void testFlickrAddCommentWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_addComment.txt";
@@ -209,35 +196,33 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("photoId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
 
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             String commentIdConnector = responseConnector.getJSONObject("comment").getString("id");
             addCommentMethodCommentId = commentIdConnector; //keeping the comment id to be used in deleteComment method.
             Assert.assertTrue(responseDirect.toString().contains(commentIdConnector));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getCommentsList method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {getCommentsList} integration test with mandatory parameters")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {getCommentsList} integration test with mandatory parameters")
     public void testFlickrGetCommentsListWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getCommentList.txt";
@@ -247,33 +232,30 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("photoId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseDirect.toString().equals(responseConnector.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for editComment method with mandatory parameters.
      */
-    @Test(dependsOnMethods = {"testFlickrAddCommentWithMandatoryParameters"}, priority = 1, groups = {"wso2.esb"}, description = "flickr {editComment} integration test with mandatory parameters")
+    @Test(dependsOnMethods = {"testFlickrAddCommentWithMandatoryParameters"}, priority = 1, groups = {"wso2.esb"},
+            description = "flickr {editComment} integration test with mandatory parameters")
     public void testFlickrEditCommentWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_editComment.txt";
@@ -285,33 +267,31 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummycomment", comment);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseDirect.toString().contains(comment));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for deleteComment method with mandatory parameters.
      */
-    @Test(dependsOnMethods = {"testFlickrAddCommentWithMandatoryParameters", "testFlickrEditCommentWithMandatoryParameters"}, priority = 1, groups = {"wso2.esb"}, description = "flickr {deleteComment} integration test with mandatory parameters")
+    @Test(dependsOnMethods = {"testFlickrAddCommentWithMandatoryParameters",
+            "testFlickrEditCommentWithMandatoryParameters"}, priority = 1, groups = {"wso2.esb"},
+            description = "flickr {deleteComment} integration test with mandatory parameters")
     public void testFlickrDeleteCommentWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_deleteComment.txt";
@@ -321,33 +301,30 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", addCommentMethodCommentId);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(!responseDirect.toString().contains(addCommentMethodCommentId));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getRecentCommentsForContacts method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {isLogged} integration test with mandatory parameters.")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {isLogged} integration test with mandatory parameters.")
     public void testFlickrGetRecentCommentsForContactsWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getRecentCommentsForContacts.txt";
@@ -356,12 +333,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         final String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json" +
@@ -375,22 +352,17 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     "&oauth_version=1.0";
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(true,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getInfo method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {getInfo} integration test with mandatory parameters")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {getInfo} integration test with mandatory parameters")
     public void testFlickrGetInfoWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getInfo.txt";
@@ -400,33 +372,30 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("userId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.people.getInfo&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id=" + flickrConnectorProperties.getProperty("userId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id="
+                    + flickrConnectorProperties.getProperty("userId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getPhotos method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {getPhotos} integration test with mandatory parameters")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {getPhotos} integration test with mandatory parameters")
     public void testFlickrGetPhotosWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getPhotos.txt";
@@ -436,33 +405,30 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("userId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.people.getPhotos&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id=" + flickrConnectorProperties.getProperty("userId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id="
+                    + flickrConnectorProperties.getProperty("userId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getPhotoInfo method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {getPhotoInfo} integration test with mandatory parameters")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {getPhotoInfo} integration test with mandatory parameters")
     public void testFlickrGetPhotoInfoWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getPhotoInfo.txt";
@@ -476,28 +442,26 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.getInfo&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getExif method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {getExif} integration test with mandatory parameters")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {getExif} integration test with mandatory parameters")
     public void testFlickrGetExifWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getExif.txt";
@@ -511,28 +475,26 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.getExif&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for addTags method with mandatory parameters.
      */
-    @Test(priority = 1, groups = {"wso2.esb"}, description = "flickr {addTags} integration test with mandatory parameters")
+    @Test(priority = 1, groups = {"wso2.esb"},
+            description = "flickr {addTags} integration test with mandatory parameters")
     public void testFlickrAddTagsWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_addTags.txt";
@@ -540,37 +502,36 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
 
         String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("photoId"));
-        rawString = rawString.replace("tagName", flickrConnectorProperties.getProperty("tagName") + System.currentTimeMillis());
+        rawString = rawString.replace("tagName", flickrConnectorProperties.getProperty("tagName")
+                + System.currentTimeMillis());
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.getInfo&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            addTagMethodTagId = ((JSONObject) responseConnector.getJSONObject("tags").getJSONArray("tag").get(0)).getString("full_tag_id");
+            addTagMethodTagId = ((JSONObject) responseConnector.getJSONObject("tags").getJSONArray("tag").get(0))
+                    .getString("full_tag_id");
             Assert.assertTrue(responseDirect.toString().contains(addTagMethodTagId));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for removeTag method with mandatory parameters.
      */
-    @Test(dependsOnMethods = {"testFlickrAddTagsWithMandatoryParameters"}, priority = 1, groups = {"wso2.esb"}, description = "flickr {removeTag} integration test with mandatory parameters")
+    @Test(dependsOnMethods = {"testFlickrAddTagsWithMandatoryParameters"}, priority = 1, groups = {"wso2.esb"},
+            description = "flickr {removeTag} integration test with mandatory parameters")
     public void testFlickrRemoveTagWithMandatoryParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_removeTag.txt";
@@ -580,27 +541,23 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", addTagMethodTagId);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.getInfo&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(!responseDirect.toString().contains(addTagMethodTagId));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
@@ -615,12 +572,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         final String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.test.echo&api_key=" +
@@ -628,22 +585,18 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     "&value=wso2-esb";
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for isLogged method with Negative parameters.
      */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "flickr {isLogged} integration test with Negative parameters.")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {isLogged} integration test with Negative parameters.")
     public void testFlickrIsLoggedWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_isLogged.txt";
@@ -652,12 +605,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         final String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json" +
@@ -671,22 +624,18 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     "&oauth_version=1.0";
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(true,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for addComment method with Negative parameters.
      */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "flickr {addComment} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {addComment} integration test with Negative parameters")
     public void testFlickrAddCommentWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_addComment.txt";
@@ -696,7 +645,6 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("photoId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
@@ -708,22 +656,18 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseConnector.getString("stat").equals("fail") &&
                     !responseDirect.toString().contains(flickrConnectorProperties.getProperty("invalidComment")));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for getCommentsList method with Negative parameters.
      */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "flickr {getCommentsList} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {getCommentsList} integration test with Negative parameters")
     public void testFlickrGetCommentsListWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getCommentList.txt";
@@ -733,33 +677,31 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("invalidPhotoId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector =
+                    ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("invalidPhotoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("invalidPhotoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseDirect.toString().equals(responseConnector.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseDirect.toString().equals(responseConnector.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for editComment method with Negative parameters.
      */
-    @Test(dependsOnMethods = {"testFlickrAddCommentWithNegativeParameters"}, priority = 2, groups = {"wso2.esb"}, description = "flickr {editComment} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {editComment} integration test with Negative parameters")
     public void testFlickrEditCommentWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_editComment.txt";
@@ -774,28 +716,27 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && !responseDirect.toString().contains(comment));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && !responseDirect.toString().contains(comment));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for deleteComment method with Negative parameters.
      */
-    @Test(/*dependsOnMethods ={"testFlickrAddCommentWithNegativeParameters","testFlickrEditCommentWithNegativeParameters"},*/ priority = 2, groups = {"wso2.esb"}, description = "flickr {deleteComment} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {deleteComment} integration test with Negative parameters")
     public void testFlickrDeleteCommentWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_deleteComment.txt";
@@ -804,17 +745,14 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
-
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
             Assert.assertTrue(responseConnector.getString("stat").equals("fail"));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
@@ -833,7 +771,8 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json" +
@@ -847,16 +786,11 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     "&oauth_version=1.0";
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(true,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
@@ -872,33 +806,31 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("invalidUserId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST",
+                    getProxyServiceURL(methodName), jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.people.getInfo&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id=" + flickrConnectorProperties.getProperty("invalidUserId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id="
+                    + flickrConnectorProperties.getProperty("invalidUserId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for getPhotos method with Negative parameters.
      */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "flickr {getPhotos} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {getPhotos} integration test with Negative parameters")
     public void testFlickrGetPhotosWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getPhotos.txt";
@@ -908,33 +840,31 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("invalidUserId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.people.getPhotos&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id=" + flickrConnectorProperties.getProperty("invalidUserId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&user_id="
+                    + flickrConnectorProperties.getProperty("invalidUserId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for getPhotoInfo method with Negative parameters.
      */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "flickr {getPhotoInfo} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {getPhotoInfo} integration test with Negative parameters")
     public void testFlickrGetPhotoInfoWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getPhotoInfo.txt";
@@ -948,28 +878,27 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.getInfo&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("invalidPhotoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("invalidPhotoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for getExif method with Negative parameters.
      */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "flickr {getExif} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {getExif} integration test with Negative parameters")
     public void testFlickrGetExifWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getExif.txt";
@@ -983,28 +912,27 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.getExif&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("invalidPhotoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("invalidPhotoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Negative test case for addTags method with Negative parameters.
      */
-    @Test(priority = 2, groups = {"wso2.esb"}, description = "flickr {addTags} integration test with Negative parameters")
+    @Test(priority = 2, groups = {"wso2.esb"},
+            description = "flickr {addTags} integration test with Negative parameters")
     public void testFlickrAddTagsWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_addTags.txt";
@@ -1014,34 +942,31 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyvalue", flickrConnectorProperties.getProperty("invalidPhotoId"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.getInfo&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("PhotoId");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("PhotoId");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(responseConnector.getString("stat").equals("fail") && !responseDirect.toString().contains("negetiveTag"));
-
+            Assert.assertTrue(responseConnector.getString("stat").equals("fail")
+                    && !responseDirect.toString().contains("negetiveTag"));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
-
     }
 
     /**
      * Negative test case for removeTag method with Negative parameters.
      */
-    @Test(dependsOnMethods = {"testFlickrAddTagsWithNegativeParameters"}, priority = 2, groups = {"wso2.esb"}, description = "flickr {removeTag} integration test with Negative parameters")
+    @Test(dependsOnMethods = {"testFlickrAddTagsWithNegativeParameters"}, priority = 2, groups = {"wso2.esb"},
+            description = "flickr {removeTag} integration test with Negative parameters")
     public void testFlickrRemoveTagWithNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_removeTag.txt";
@@ -1050,24 +975,23 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "/negetive/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
             Assert.assertTrue(responseConnector.getString("stat").equals("fail"));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getCommentsList method with Optional parameters.
      */
-    @Test(priority = 3, groups = {"wso2.esb"}, description = "flickr {getCommentsList} integration test with Optional parameters")
+    @Test(priority = 3, groups = {"wso2.esb"},
+            description = "flickr {getCommentsList} integration test with Optional parameters")
     public void testFlickrGetCommentsListWithOptionalParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "optional/flickr_getCommentList.txt";
@@ -1079,34 +1003,32 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummymaxdate", flickrConnectorProperties.getProperty("maxDate"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "optional/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId")
-                    + "&min_comment_date=" + flickrConnectorProperties.getProperty("minDate") + "&max_comment_date=" + flickrConnectorProperties.getProperty("maxDate");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId")
+                    + "&min_comment_date=" + flickrConnectorProperties.getProperty("minDate") + "&max_comment_date="
+                    + flickrConnectorProperties.getProperty("maxDate");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseDirect.toString().equals(responseConnector.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getPhotos method with Optional parameters.
      */
-    @Test(priority = 3, groups = {"wso2.esb"}, description = "flickr {getPhotos} integration test with Optional parameters")
+    @Test(priority = 3, groups = {"wso2.esb"},
+            description = "flickr {getPhotos} integration test with Optional parameters")
     public void testFlickrGetPhotosWithOptionalParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "optional/" + "flickr_getPhotos.txt";
@@ -1121,12 +1043,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyextra", flickrConnectorProperties.getProperty("extraInfo"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "optional/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.people.getPhotos&api_key=" +
@@ -1139,21 +1061,18 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     + "&extras=" + flickrConnectorProperties.getProperty("extraInfo");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
 
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getRecentCommentsForContacts method with Optional parameters.
      */
-    @Test(priority = 3, groups = {"wso2.esb"}, description = "flickr {isLogged} integration test with Optional parameters.")
+    @Test(priority = 3, groups = {"wso2.esb"},
+            description = "flickr {isLogged} integration test with Optional parameters.")
     public void testFlickrGetRecentCommentsForContactsWithOptionalParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "flickr_getRecentCommentsForContacts.txt";
@@ -1162,12 +1081,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         final String rawString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json" +
@@ -1181,22 +1100,17 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     "&oauth_version=1.0";
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(true,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-
             Assert.assertTrue(responseConnector.toString().equals(responseDirect.toString()));
-
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getCommentsList method with OptionalNegative parameters.
      */
-    @Test(priority = 4, groups = {"wso2.esb"}, description = "flickr {getCommentsList} integration test with OptionalNegative parameters")
+    @Test(priority = 4, groups = {"wso2.esb"},
+            description = "flickr {getCommentsList} integration test with OptionalNegative parameters")
     public void testFlickrGetCommentsListWithOptionalNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "optional/flickr_getCommentList.txt";
@@ -1208,34 +1122,33 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummymaxdate", flickrConnectorProperties.getProperty("invalidMaxDate"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "optional/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.photos.comments.getList&api_key=" +
-                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id=" + flickrConnectorProperties.getProperty("photoId")
-                    + "&min_comment_date=" + flickrConnectorProperties.getProperty("invalidMinDate") + "&max_comment_date=" + flickrConnectorProperties.getProperty("invalidMaxDate");
+                    flickrConnectorProperties.getProperty("consumerKey") + "&photo_id="
+                    + flickrConnectorProperties.getProperty("photoId")
+                    + "&min_comment_date=" + flickrConnectorProperties.getProperty("invalidMinDate")
+                    + "&max_comment_date=" + flickrConnectorProperties.getProperty("invalidMaxDate");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(!responseConnector.toString().contains("author") && responseDirect.toString().equals(responseConnector.toString()));
-
+            Assert.assertTrue(!responseConnector.toString().contains("author")
+                    && responseDirect.toString().equals(responseConnector.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 
     /**
      * Positive test case for getPhotos method with OptionalNegative parameters.
      */
-    @Test(priority = 4, groups = {"wso2.esb"}, description = "flickr {getPhotos} integration test with OptionalNegative parameters")
+    @Test(priority = 4, groups = {"wso2.esb"},
+            description = "flickr {getPhotos} integration test with OptionalNegative parameters")
     public void testFlickrGetPhotosWithOptionalNegativeParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "optional/" + "flickr_getPhotos.txt";
@@ -1250,12 +1163,12 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
         rawString = rawString.replace("dummyextra", flickrConnectorProperties.getProperty("invalidExtraInfo"));
         final String jsonString = addCredentials(rawString);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + "optional/" + methodName + ".xml";
-        //String modifiedJsonString = String.format(jsonString, accessToken);
 
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
 
         try {
-            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName), jsonString);
+            JSONObject responseConnector = ConnectorIntegrationUtil.sendRequest("POST", getProxyServiceURL(methodName),
+                    jsonString);
 
             String httpMethod = "GET";
             String parameters = "format=json&nojsoncallback=1&method=flickr.people.getPhotos&api_key=" +
@@ -1268,14 +1181,10 @@ public class FlickrConnectoreIntegrationTest extends ESBIntegrationTest {
                     + "&extras=" + flickrConnectorProperties.getProperty("invalidExtraInfo");
             JSONObject responseDirect = ConnectorIntegrationUtil.sendRestRequest(false,
                     httpMethod, parameters, flickrConnectorProperties);
-
-            System.out.println("responseConnector\n" + responseConnector);
-            System.out.println("responseDirect\n" + responseDirect);
-            Assert.assertTrue(!responseConnector.toString().contains("license") && responseConnector.toString().equals(responseDirect.toString()));
-
+            Assert.assertTrue(!responseConnector.toString().contains("license")
+                    && responseConnector.toString().equals(responseDirect.toString()));
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 }
